@@ -466,9 +466,6 @@ func (s *StdNetBind) Send(bufs [][]byte, endpoint Endpoint, offset int) error {
 		}
 		bufs = bufs[IdealBatchSize:]
 	}
-	if s.onWrite != nil && len(bufs) > 0 {
-		s.onWrite(len(bufs[0]) - offset)
-	}
 	standardEndpoint := endpoint.(*StdNetEndpoint)
 	s.mu.Lock()
 	blackhole := s.blackhole4
@@ -558,6 +555,9 @@ retry:
 	}
 	if retried {
 		return ErrUDPGSODisabled{onLaddr: conn.LocalAddr().String(), RetryErr: err}
+	}
+	if err == nil && s.onWrite != nil && len(bufs) > 0 {
+		s.onWrite(len(bufs[0]) - offset)
 	}
 	return err
 }
