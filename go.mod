@@ -1,6 +1,6 @@
 module github.com/sagernet/wireguard-go
 
-go 1.25
+go 1.27.0
 
 require (
 	github.com/sagernet/sing v0.7.10
